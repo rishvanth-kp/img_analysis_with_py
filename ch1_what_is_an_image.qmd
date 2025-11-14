@@ -4,13 +4,14 @@ jupyter: python3
 ---
 
 
+# What is an image?
 
 An image is a static snapshot of an object.  Let us start with an analog image
 and work through understating a digital image. An example of an analog image is
 a photograph taken with an old fashioned camera on a physical photosensitive
 film.  If we were to take a large magnifying glass and zoom in on a really
 small area, the colors on the image will change in a very 'smooth' manner
-without any discontinutites. Such an image is an analog image which is in
+without any discontinuities. Such an image is an analog image which is in
 essence a 'perfect' representation of the captured object where every possible
 detail of an image is captured.  
 
@@ -40,13 +41,13 @@ computer and how can we manipulate them?  We will use make extensive use of two
 python packages,`numpy` and `scikit-image`, for our image analysis.
 
 
-## A brif introduction to `ski-image`
+## A brief introduction to `ski-image`
 
 ### An image is a matrix
-At image is essentailly a matrix of numbers. The dimenstions of the matrix corresposnd to
-the size of an image. Each element of the matrix correspnd to a pixel. 
-The images in `ski-image` are represented as `numpy` arrays. As an example we can manually
-create an image by creating a numpy array. 
+At image is essentially a matrix of numbers. The dimensions of the matrix
+corresponding to the size of an image. Each element of the matrix correspond to
+a pixel.  The images in `ski-image` are represented as `numpy` arrays. As an
+example we can manually create an image by creating a numpy array. 
 
 ```{python}
 import skimage as ski
@@ -65,15 +66,17 @@ ax.imshow(img, cmap='gray')
 plt.axis('off')
 ```
 
-Here, all the pixels have a value of a `0` or a `1`. Such an image is referred to as a binay image since
-it represent just two colors. In a binary image, a `0` typically corresponds to a black pixel and a `1` to 
-a white pixel (however, these are just arbirary pseudo-colors for visualization). 
+Here, all the pixels have a value of a `0` or a `1`. Such an image is referred
+to as a binary image since it represent just two colors. In a binary image, a
+`0` typically corresponds to a black pixel and a `1` to a white pixel (however,
+these are just arbitrary pseudo-colors for visualization). 
 
 ### Grayscale image
-A greyscale image is similar, but each pixel contains a value larger value. The minimum value of a pixel
-is always 0, and the maximum value depends on the type of the image. In the simplest case, let us consider
-a 2-bit image, where the largest value is $2^2 = 4$. Here, 0 preprests black and 3 represts white, and 
-1 and 2 represent shades of gray in between. 
+A greyscale image is similar, but each pixel contains a value larger value. The
+minimum value of a pixel is always 0, and the maximum value depends on the type
+of the image. In the simplest case, let us consider a 2-bit image, where the
+largest value is $2^2 = 4$. Here, 0 represents black and 3 represents white,
+and 1 and 2 represent shades of gray in between. 
 
 ```{python}
 img = np.array([[0, 0, 0, 0, 0, 0, 0, 0],
@@ -88,11 +91,12 @@ ax.imshow(img, cmap='gray')
 plt.axis('off')
 ```
 
-In an 8-bit image we can have $2^8 = 256$ distict values, with 0 being black, 255 being white, and 254 values of gray in between. 
-Similarly a 16-bit image can have $2^{16}= 56xuz$ distinct values. THresfre, as the bit-depth of an image imcreases we can 
-it can reporent an image with more shades of gray.
-We will use a 16bit image as it is the mosty
-common type use in microscopy, though all the concepts are identical irrespective of the image type. 
+In an 8-bit image we can have $2^8 = 256$ distinct values, with 0 being black,
+255 being white, and 254 values of gray in between.  Similarly a 16-bit image
+can have $2^{16}= 56xuz$ distinct values. Therefore, as the bit-depth of an
+image increases we can it can represent an image with more shades of gray.  We
+will use a 16bit image as it is the mostly common type use in microscopy,
+though all the concepts are identical irrespective of the image type. 
 
 ```{python}
 # A 1x2 2-bit image
@@ -122,21 +126,39 @@ ax[1, 1].set_axis_off()
 
 ## Reading and writing images
 
-Now that we know how to manipulate toy images, let up read in a real image. 
-We can read an image using the funcion `io.imread` to read in a image
-as a numpy ndarray. All we need is a path the image
+Now that we know how to manipulate toy images, let up read in a real image.  We
+can read an image using the funcion `io.imread` to read in a image as a numpy
+ndarray. All we need is a path the image
 
 ```{python}
 # Read in an image
+img = ski.io.imread("data/F01_202w2.TIF")
 
 # we can check the size of the image and the data type
+print(img.shape)
+print(img.dtype)
 
 # We can similarly view the image using matplotlib
+
+fig, ax = plt.subplots()
+ax.imshow(img, cmap='gray')
+plt.axis('off')
 ```
 
-We can simiarly manipulate index and manipulate an image just like manipulating any numpy matrix.
+We can similarly manipulate index and manipulate an image just like manipulating any numpy matrix.
 
-To write an image we can use the fucntion `io.imsave`, we need the image to save and the file path.
+To write an image we can use the function `io.imsave`, we need the image to save and the file path.
+
+```{python}
+img1 = ski.io.imread("data/F01_202w2.TIF")
+img1[100:200, 100:199] = 0
+
+img1[500:600, 200:300] = 2000
+
+fig, ax = plt.subplots()
+ax.imshow(img1, cmap='gray')
+plt.axis('off')
+```
 
 ```{python}
 # Save the image
@@ -145,7 +167,6 @@ To write an image we can use the fucntion `io.imsave`, we need the image to save
 ## Indexing and manipulating images
 
 We can index and manipulate an image just like a matrix.
-
 
 ## A note on image formats
 

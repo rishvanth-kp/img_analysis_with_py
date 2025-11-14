@@ -209,3 +209,6 @@ __marimo__/
 # quarto
 *_files/
 *.html
+
+# vim
+*.bak
