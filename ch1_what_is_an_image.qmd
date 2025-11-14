@@ -1,6 +1,12 @@
 ---
 title: 'Chapter 1: What is an image?'
 jupyter: python3
+format:
+  html:
+    embed-resources: true
+  pdf:
+    documentclass: article
+    toc: true
 ---
 
 
@@ -145,9 +151,11 @@ ax.imshow(img, cmap='gray')
 plt.axis('off')
 ```
 
-We can similarly manipulate index and manipulate an image just like manipulating any numpy matrix.
+We can similarly manipulate index and manipulate an image just like
+manipulating any numpy matrix.
 
-To write an image we can use the function `io.imsave`, we need the image to save and the file path.
+To write an image we can use the function `io.imsave`, we need the image to
+save and the file path.
 
 ```{python}
 img1 = ski.io.imread("data/F01_202w2.TIF")
