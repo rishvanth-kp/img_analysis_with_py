@@ -212,3 +212,6 @@ __marimo__/
 
 # vim
 *.bak
+
+# temp data files
+data/out.tif
