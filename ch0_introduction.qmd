@@ -1,0 +1,23 @@
+---
+title: 'Chapter 0: Introduction'
+jupyter: python3
+format:
+  html:
+    embed-resources: true
+  pdf:
+    documentclass: article
+    toc: true
+    fontsize: 12pt
+    geometry:
+      - top=1in
+      - bottom=1in
+      - left=1in
+      - right=1in
+      - heightrounded
+---
+
+# What is image analysis?
+
+# Why python?
+
+# Scope

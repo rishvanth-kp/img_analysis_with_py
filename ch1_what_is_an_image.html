@@ -2376,7 +2376,7 @@ window.Quarto = {
 <section id="binary-image" class="level3">
 <h3 class="anchored" data-anchor-id="binary-image">Binary image</h3>
 <p>As we have seem an image is a grid of pixels. A grid is most easily represented as matrix. The dimensions of the matrix corresponding to the size of an image. Each element of the matrix correspond to a pixel. A two dimensional matrix of size 6 * 8 would represent an image that is 6 pixels in height and 8 pixels in width, and the intensity is stored at each pixel. The images in <code>ski-image</code> are represented as <code>numpy</code> arrays:</p>
-<div id="f6fc7a6d" class="cell" data-execution_count="1">
+<div id="82fc01d9" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the required packages</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> skimage <span class="im">as</span> ski</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -2408,7 +2408,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="grayscale-image">Grayscale image</h3>
 <p>A grayscale image is similarly a matrix but each pixel can contain a larger range of values. The minimum value corresponds to a black pixel, the maximum value to a white pixel, a the values in between represent the distinct shades of gray. Therefore, the larger the range of values, the more shades of gray can be represented.</p>
 <p>In the simplest case, let us consider a 2-bit image, where the smallest value at a pixel is 0 and the largest value is <span class="math inline">\(2^2 - 1 = 3\)</span>. Here, 0 represents black and 3 represents white, and 1 and 2 represent shades of gray in between.</p>
-<div id="1ccacbc4" class="cell" data-execution_count="2">
+<div id="905b4c2d" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A 2D image with 4 distinct values</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
@@ -2431,7 +2431,7 @@ window.Quarto = {
 </div>
 <p>In an 8-bit image we can have <span class="math inline">\(2^8 = 256\)</span> distinct values, with 0 being black, 255 being white, and 254 values of gray in between. Similarly a 16-bit image can have <span class="math inline">\(2^{16} = 65536\)</span> distinct values. Therefore, as the bit-depth of an image increases we can it can represent an image with more shades of gray. 16 bit images are the most typical in microscopy, though all the concepts are identical irrespective of the image type.</p>
 <p>The figure below shows 2, 4, 8, and 16 bit images, with <code>0</code> at the top right and the maximum value at the bottom left, and each pixel increments by <code>1</code>. Notice how the increment in intensity between adjacent pixels get smaller as the bit-depth of the image increases.</p>
-<div id="1fb0767b" class="cell" data-execution_count="3">
+<div id="2be15591" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A 1x2 2-bit image</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>img_2bit <span class="op">=</span> np.arange(<span class="dv">0</span>, <span class="dv">2</span>).reshape(<span class="dv">1</span>,<span class="dv">2</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># A 2*2 4-bit image</span></span>
@@ -2468,7 +2468,7 @@ window.Quarto = {
 <section id="indexing-and-manipulating-images" class="level2">
 <h2 class="anchored" data-anchor-id="indexing-and-manipulating-images">Indexing and manipulating images</h2>
 <p>Since an image is represented as a matrix, we can similarly manipulate index and manipulate an image just like manipulating any matrix. The image coordinate <code>[0, 0]</code> is at the top left of the image in <code>numpy</code>. As the x-coordinate increases we go down the image, and as the y-coordinate increases we go the right of the image. A few examples to get started with image indexing are shown below.</p>
-<div id="3cfe4dad" class="cell" data-execution_count="4">
+<div id="b8de9316" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an 8x8 image with all 0s</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.zeros((<span class="dv">8</span>, <span class="dv">8</span>))</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2504,7 +2504,7 @@ window.Quarto = {
 <section id="reading-and-writing-images" class="level2">
 <h2 class="anchored" data-anchor-id="reading-and-writing-images">Reading and writing images</h2>
 <p>Now that we know how to manipulate toy images, let up read in a real image. We can read an image using the function <code>io.imread</code> as a numpy ndarray, all we need is a path to the image. Once we have the image we can view and manipulate it in the same way. To write an image we can use the function <code>io.imsave</code>, we need the image to save and the file path.</p>
-<div id="1fd6b8e7" class="cell" data-execution_count="5">
+<div id="175eccb5" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in an image</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> ski.io.imread(<span class="st">&quot;data/F01_202w2.TIF&quot;</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
