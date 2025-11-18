@@ -280,19 +280,23 @@ just the border pixels.
 ```{python}
 img = ski.data.coins()
 
-
 # create SE and dilate
 se = ski.morphology.footprint_rectangle((3, 3))
 dil = ski.morphology.binary_dilation(hole_filled, se)
 
-# subtract
+# subtract from the dilated image
 border = dil ^ hole_filled
 print(hole_filled.dtype)
 
-fig, ax = plt.subplots(1, 3, figsize = (20, 15))
-ax[0].imshow(hole_filled, cmap = 'gray')
-ax[1].imshow(dil, cmap = 'gray')
-ax[2].imshow(border, cmap = 'gray')
+fig, ax = plt.subplots(1, 3)
+ax[0].imshow(hole_filled, cmap='gray')
+ax[0].set_title('Original image')
+ax[1].imshow(dil, cmap='gray')
+ax[1].set_title('Dilated image')
+ax[2].imshow(border, cmap='gray')
+ax[2].set_title('Object boundaries')
+for a in ax:
+    a.set_axis_off()
 ```
 
 ## Morphological reconstruction
@@ -309,6 +313,7 @@ This process is repeated iteratively until the there is no changes.
 We can use the inbuilt function to accomplish this. 
 
 ```{python}
+# Create a binary image
 img = np.array([[0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 1, 1, 0, 1, 0, 1, 1],
                 [0, 1, 1, 0, 1, 0, 0, 0],
@@ -318,18 +323,31 @@ img = np.array([[0, 0, 0, 0, 0, 0, 0, 0],
                 [0, 1, 1, 1, 1, 1, 1, 0],
                 [0, 0, 0, 0, 0, 0, 0, 0]])
 
+# Create a structuring element
 se = ski.morphology.footprint_rectangle((2, 2))
 
+# Erode the original image to use as seed
 er = ski.morphology.binary_erosion(img, se)
-opening = ski.morphology.opening(img, se)
-reconst = ski.morphology.reconstruction(er, img)
-print(reconst.dtype)
 
+# Reconstruct starting from the eroded image
+# and using the original image as mask
+reconst = ski.morphology.reconstruction(er, img)
+
+# Openeing of the orgiginal image for comparison
+opening = ski.morphology.opening(img, se)
+
+# Plot the images
 fig, ax = plt.subplots(2, 2)
-ax[0, 0].imshow(img, cmap = 'gray')
-ax[0, 1].imshow(er, cmap = 'gray')
-ax[1, 0].imshow(opening, cmap = 'gray')
-ax[1, 1].imshow(reconst, cmap = 'gray')
+ax[0, 0].imshow(img, cmap='gray')
+ax[0, 0].set_title('Original image')
+ax[0, 1].imshow(er, cmap='gray')
+ax[0, 1].set_title('Eroded image')
+ax[1, 0].imshow(reconst, cmap='gray')
+ax[1, 0].set_title('Reconstructed image')
+ax[1, 1].imshow(opening, cmap='gray')
+ax[1, 1].set_title('Opened image')
+for a in ax.flatten():
+    a.set_axis_off()
 ```
 
 ## Skelitionization
