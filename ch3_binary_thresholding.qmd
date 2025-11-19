@@ -96,15 +96,36 @@ for a in ax:
 
 Now that we have seen how to binary threshold an image and the impact of the
 thresholds value, how can the pick out the optimal threshold value. Most often
-is this accomplished from the intensity histogram of the input irate. 
+is this accomplished from the intensity histogram of the input image. 
 
 By looking at the histogram we can get an estimate of pixel intensities in the
 image. Most importantly, since we are binary thresholding an image, we can get
-a sense of the number of of pixels that will be above or below a specific
-cutoff.  For example, from the above histogram, we can easily see that picking
-a value of 200 was too high and it retained too few pixels as expected and
-picking a value of less than 100 is likely too low. A threshold of
-approximately 125 looks optimal for our proposes. 
+a sense of the number of pixels that will be above or below a specific cutoff.
+For example, from the histogram below, we can easily see that picking a value
+of 200 was too high and it retained too few pixels as expected and picking a
+value of less than 100 is likely too low. A threshold of approximately 125
+looks optimal for our proposes. 
+
+```{python}
+# Load the coins data
+img = ski.data.coins()
+
+# Get the histogram
+hist, hist_centers = ski.exposure.histogram(img)
+
+# Threshold above 125
+img_gt125 = img > 125
+
+# Plot the histogram
+fig, ax =  plt.subplots(1, 3, figsize = (9,3))
+ax[0].imshow(img, cmap = 'gray', vmax = 256)
+ax[0].set_axis_off()
+ax[0].set_title('Original image')
+ax[1].plot(hist_centers, hist)
+ax[2].imshow(img_gt125, cmap = 'gray')
+ax[2].set_title('image > 125')
+ax[2].set_axis_off()
+```
 
 Though we can look at a histogram and manually experiment with what a an
 optimal threshold might be, it is too slow and subjective. Therefore, we need
@@ -166,7 +187,7 @@ for a in ax:
 
 # Picking the the "right" metric
 While the Otsu and Triangle thresholding approaches are widely uses, there are
-several other approach that are available as well: . 
+several other approach that are available as well. 
 
 Picking the right metric really depends on your downstream application. If it
 is important to retain as many foreground pixels as possible (that can later be
