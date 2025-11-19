@@ -19,23 +19,23 @@ format:
 # Introduction
 
 After binary thresholding an image to retain just the desired objects in the
-foreground, these images usually contain undesirable artifacts. These could small
-objects, objects of undesired shape, or an object separated into multiple;les ones
-by small fissures.  Morphological operations on a binary image is useful to fix
-these issues. Morphological operations can also be combined to fill holes or 
-extract object boundaries in binary images.
+foreground, these images usually contain undesirable artifacts. These could
+small objects, objects of undesired shape, or an object separated into multiple
+ones by small fissures.  Morphological operations on a binary image is useful
+to fix these issues. Morphological operations can also be combined to fill
+holes or extract object boundaries in binary images.
 
 
 # The fundamental morphological operations
 
 The two fundamental morphological operations are erosion and dilation. These
-are building blocks of number of other techniques that combine them in
-clever ways.  Although morphological operations are applicable to both
-binary and grayscale images, we will focus only on binary images.
+are building blocks of number of other techniques that combine them in clever
+ways.  Although morphological operations are applicable to both binary and
+grayscale images, we will focus only on binary images.
 
 ## Structuring element
 The key component for a morphological operation in a structuring element. A
-structuring element is a identical to a kernel that we used for image
+structuring element is a identical to a kernel (window) that we used for image
 smoothing.  A structural element is a (small) binary image where the foreground
 pixels are of a desired shape. As examples, we can have rectangle or elliptical
 shaped structural elements:
@@ -55,7 +55,7 @@ sq_se = ski.morphology.footprint_rectangle((3, 3))
 # A circular structuring element or radius 10
 circle_se = ski.morphology.ellipse(10, 10)
 
-# A elliptical strcuting element of width 10 and height 5
+# A elliptical structuring element of width 10 and height 5
 ellipse_se = ski.morphology.ellipse(10, 5)
 
 # Plot the SEs
@@ -113,7 +113,6 @@ image that are smaller than the structuring element. For example, using a
 square structuring element 2 pixels wide will join any objects in the input
 image that are less than 2 pixels apart, and all other objects will expand.
 
-
 ```{python}
 # Create a binary image
 img = np.array([[0, 0, 0, 0, 0, 0, 0, 0],
@@ -151,7 +150,7 @@ Morphological opening first erodes an image and then dilates the eroded image.
 As we have seen eroding an image removes objects smaller than the structuring
 elements, and makes all other objects in the input image smaller. Dilating the
 eroded image restores these smaller objects by making them bigger.
-Importantly, the operations that were lost in the erosion are not restored.
+Importantly, the objects that were lost in the erosion are not restored.
 In essence, we remove all objects smaller than the structuring element and all
 other objects are restored. 
 
@@ -197,7 +196,7 @@ Dilating an image makes all objects bigger and objects that closer than
 the structuring element are joined into one, and makes all other objects
 larger. Eroding a dilated image restores the larger objects by making
 them smaller. Importantly, the objects that were merged by the dilation will
-remain merges. In effect, we connect objects that are closer than the
+remain merged. In effect, we connect objects that are closer than the
 structuring element and all other objects are restored. 
 
 ```{python}
@@ -236,21 +235,23 @@ for a in ax.flatten():
     a.set_axis_off()
 ```
 
-Note that for both opening and closing, the final image ins not a prefect
+Note that for both opening and closing, the final image is not a prefect
 reconstruction of the input image. 
 
 # Iterative erosion and dilation
-We can get to further higher order operation by iteratively applying these
-operations. There are several of the, but let us look at three that come
+We can get to further higher order functions by iteratively applying these
+operations. There are several of them, but let us look at three that come
 in very handy when analyzing biological samples. 
 
 ## Hole filling
 As the name suggests, this fills holes in in binary images. Holes in a binary
 image are background pixels that are completely surrounded by foreground
-pixels. A fife filling converts these background pixels into foreground ound
+pixels. A hole filling converts these background pixels into foreground
 pixels. 
 
 ```{python}
+from scipy import ndimage as ndi
+
 # Load the cell images
 # img = ski.io.imread("data/F01_202w1.TIF")
 img = ski.data.coins()
@@ -259,22 +260,26 @@ img = ski.data.coins()
 otsu_thresh = ski.filters.threshold_otsu(img)
 img_otsu = img > otsu_thresh
 
-border_img = np.ones(img.shape, dtype = bool)
-border_img[1:-1, 1:-1] = 0
-print(~img_otsu)
+# Fill in the holes
+# This function is part of the scipy package.
+hole_filled = ndi.binary_fill_holes(img_otsu)
 
-hole_filled = ski.morphology.reconstruction((~img_otsu) & border_img, ~img_otsu)
-hole_filled = ~hole_filled.astype(bool)
-
+# Plot the images
 fig, ax = plt.subplots(1, 3)
 ax[0].imshow(img, cmap = 'gray')
+ax[0].set_title('Original image')
 ax[1].imshow(img_otsu, cmap = 'gray')
+ax[1].set_title('Binary image')
 ax[2].imshow(hole_filled, cmap = 'gray')
+ax[2].set_title('Hole filled')
+for a in ax:
+    a.set_axis_off()
 ```
 
-## Border extraction We can get the border of objects by dilating an image
+## Border extraction 
+We can get the border of objects by dilating an image
 with a 3x3 square structuring element to make all objects in the image one pixel
-larger. We can them subtract the original image from the dilated image to retain
+larger. We can then subtract the original image from the dilated image to retain
 just the border pixels.
 
 ```{python}
@@ -286,7 +291,6 @@ dil = ski.morphology.binary_dilation(hole_filled, se)
 
 # subtract from the dilated image
 border = dil ^ hole_filled
-print(hole_filled.dtype)
 
 fig, ax = plt.subplots(1, 3)
 ax[0].imshow(hole_filled, cmap='gray')
@@ -301,16 +305,14 @@ for a in ax:
 
 ## Morphological reconstruction
 As we have seen opening changes the shape of the objects in the input image,
-and these can be quite problematic when we need to preserve the object
-shapes.  Morphological reconstruction is a way to preserve the shape of the of
-the objects. It takes a input tow binary images a the input binary image
-(usually referred to as the mask image) and a seed image (sometimes referred toa the
-marker image).  In the fist stem the seed image in expanded by dilation.
-However this dilation is contained by the mask image, such that the dilation
-does not expand to any pixels that is not a foreground pixel in the mask image.
-This process is repeated iteratively until the there is no changes. 
-
-We can use the inbuilt function to accomplish this. 
+and these can be quite problematic when we need to preserve the object shapes.
+Morphological reconstruction is a way to preserve the shape of the of the
+objects. It takes as input two images: the input binary image (usually referred
+to as the mask image) and a seed image (sometimes referred to as the marker
+image).  In the fist step the seed image in expanded by dilation.  However this
+dilation is contained by the mask image, such that the dilation does not expand
+to any pixels that is not a foreground pixel in the mask image.  This process
+is repeated iteratively until there are no changes. 
 
 ```{python}
 # Create a binary image
@@ -333,22 +335,51 @@ er = ski.morphology.binary_erosion(img, se)
 # and using the original image as mask
 reconst = ski.morphology.reconstruction(er, img)
 
-# Openeing of the orgiginal image for comparison
+# Opening of the original image for comparison
 opening = ski.morphology.opening(img, se)
 
 # Plot the images
 fig, ax = plt.subplots(2, 2)
-ax[0, 0].imshow(img, cmap='gray')
-ax[0, 0].set_title('Original image')
-ax[0, 1].imshow(er, cmap='gray')
-ax[0, 1].set_title('Eroded image')
-ax[1, 0].imshow(reconst, cmap='gray')
+ax[0, 0].imshow(img, cmap = 'gray')
+ax[0, 0].set_title('Original (mask) image')
+ax[0, 1].imshow(er, cmap = 'gray')
+ax[0, 1].set_title('Marker/seed image')
+ax[1, 0].imshow(reconst, cmap = 'gray')
 ax[1, 0].set_title('Reconstructed image')
-ax[1, 1].imshow(opening, cmap='gray')
+ax[1, 1].imshow(opening, cmap = 'gray')
 ax[1, 1].set_title('Opened image')
 for a in ax.flatten():
     a.set_axis_off()
 ```
 
-## Skelitionization
+## Skeletonization
+
+Skeletonization iteratively erodes images to get a 1 pixel skeleton on an
+image. It is useful for understanding the shape and orientation of objects in
+an image. 
+
+```{python}
+from scipy import ndimage as ndi
+
+# Load the image
+img = ski.io.imread("data/F01_202w1.TIF")
+
+# Binary threshold the image
+img = img > ski.filters.threshold_otsu(img)
+
+# Fill in the holes
+img = ndi.binary_fill_holes(img)
+
+# Get the skeletion of the filled image
+img_skeleton = ski.morphology.skeletonize(img)
+
+# Plot the image
+fig, ax = plt.subplots(1, 2, figsize = (10, 5))
+ax[0].imshow(img, cmap = 'gray')
+ax[0].set_title('Binary image')
+ax[1].imshow(img_skeleton, cmap = 'gray')
+ax[1].set_title('Skeleton of image')
+for a in ax:
+    a.set_axis_off()
+```
 
