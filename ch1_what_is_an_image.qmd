@@ -25,11 +25,11 @@ a photograph taken with an old fashioned camera on a physical photosensitive
 film.  If we were to take a large magnifying glass and zoom in on a really
 small area, the colors on the image will change in a very 'smooth' manner
 without any discontinuities. Such an image is an analog image, which is in
-essence a 'perfect' representation of the captured object where every possible
-detail of an image is captured.  
+essence a 'perfect' representation of the captured scene where every possible
+detail is captured.  
 
 Our computers are extremely good at storing an manipulating massive amounts of
-numerical values.  That is they store digital discreet values, and hence
+numerical values.  That is they store discrete digital values, and hence
 impossible for them to store numerical values for infinitesimally small
 intervals when moving along an image. Our computers store a 'digitized' version
 of an image. An image is digitized by diving an analog image into grids.  Each
@@ -40,14 +40,12 @@ grids are required to cover the entire image. Making the grids smaller
 increased the resolution of the image, however it comes at the cost of storing
 more values per image (and so increasing the image size). 
 
-In a digital image, at each pixel the intensity 
-
 Obviously, all digital cameras and microscopes do not capture an analog image
 and convert them to a digital image, but rater they capture a digital image
-directed. The most common methods used for capturing digital images in a
+directly. The most common methods used for capturing digital images in a
 microscope are CMOS-CCD such as used in most wide-field microscopes and PMT
 such as used in most confocal microscopes. The details of how these senors work
-are irrelevant here, and we obtain a final digital image from them.  
+are irrelevant here, and we directly obtain a final digital image from them.  
 
 Now that we have divided an image into a fixed number of grids and have the
 average intensity at each grid, how are these values actually stored in a
@@ -58,12 +56,12 @@ python packages,`numpy` and `scikit-image`, for our image analysis.
 ## An image is a matrix
 
 ### Binary image
-As we have seem an image is a grid of pixels. A grid is most easily represented
+As we have seen an image is a grid of pixels. A grid is most easily represented
 as matrix. The dimensions of the matrix corresponding to the size of an image.
-Each element of the matrix correspond to a pixel. A two dimensional matrix of
+Each element of the matrix corresponds to a pixel. A two dimensional matrix of
 size 6 * 8 would represent an image that is 6 pixels in height and 8 pixels in
-width, and the intensity is stored at each pixel.  The images in `ski-image`
-are represented as `numpy` arrays:
+width, and the intensity is stored at each pixel. Images in `ski-image` are
+represented as `numpy` arrays:
 
 ```{python}
 # Load the required packages
@@ -91,7 +89,7 @@ colors.  In a binary image, a `0` typically corresponds to a black pixel and a
 visualization). 
 
 ### Grayscale image
-A grayscale image is similarly a matrix but each pixel can contain a larger
+A grayscale image is similarly a matrix but each pixel contains a larger
 range of values. The minimum value corresponds to a black pixel, the maximum
 value to a white pixel, a the values in between represent the distinct shades
 of gray. Therefore, the larger the range of values, the more shades of gray can
@@ -119,9 +117,7 @@ plt.axis('off')
 In an 8-bit image we can have $2^8 = 256$ distinct values, with 0 being black,
 255 being white, and 254 values of gray in between.  Similarly a 16-bit image
 can have $2^{16} = 65536$ distinct values. Therefore, as the bit-depth of an
-image increases we can it can represent an image with more shades of gray.  16
-bit images are the most typical in microscopy, though all the concepts are
-identical irrespective of the image type. 
+image increases we can it can represent an image with more shades of gray.
 
 The figure below shows 2, 4, 8, and 16 bit images, with `0` at the top right and
 the maximum value at the bottom left, and each pixel increments by `1`. Notice
@@ -154,14 +150,32 @@ ax[1, 1].set_title('16-bit')
 ax[1, 1].set_axis_off()
 ```
 
-## Indexing and manipulating images
+16-bit images are the most typical in microscopy since it can capture a large
+amount of detail per pixel.  For example, the figure below show the same
+nuclear image in 16 bit and in 8 bit. Notice how much more detail can be seen
+in the 16 bit image than in the 8-bit image. 
 
-Since an image is represented as a matrix, we can similarly manipulate index
-and manipulate an image just like manipulating any matrix. The image coordinate
-`[0, 0]` is at the top left of the image in `numpy`. As the x-coordinate
-increases we go down the image, and as the y-coordinate increases we go the
-right of the image.  A few examples to get started with image indexing are
-shown below.
+```{python}
+# Read in an image
+img_16bit = ski.io.imread("data/F01_202w2.TIF")[150:400, 1100:1350]
+img_8bit = ski.util.img_as_ubyte(img_16bit)
+
+fig, ax = plt.subplots(1, 2)
+ax[0].imshow(img_16bit, cmap = 'gray')
+ax[0].set_title('16-bit image')
+ax[1].imshow(img_8bit, cmap = 'gray')
+ax[1].set_title('8-bit image')
+for a in ax:
+    a.set_axis_off()
+```
+
+# Indexing and manipulating images
+
+Since an image is represented as a matrix, we can index and manipulate an image
+just like a matrix. The image coordinate `[0, 0]` is at the top left of the
+image in `numpy`. As the x-coordinate increases we go down the image, and as
+the y-coordinate increases we go the right of the image.  A few examples to get
+started with image indexing are shown below.
 
 ```{python}
 # Create an 8x8 image with all 0s
@@ -169,9 +183,9 @@ img = np.zeros((8, 8))
 
 # Index a specific pixel by specifying the both the x and y coordinates
 # top left pixel
-img[0][0] = 1
+img[0, 0] = 1
 # bottom right pixel
-img[7][7] = 1
+img[7, 7] = 1
 
 # Index a range of pixels by specifying the start and stop coordinates
 # for both x and y coordinates. The coordinates are specified in
@@ -189,13 +203,13 @@ ax.imshow(img, cmap = 'gray', vmax = 4)
 plt.axis('off')
 ```
 
-## Reading and writing images
+# Reading and writing images
 
-Now that we know how to manipulate toy images, let up read in a real image.  We
-can read an image using the function `io.imread` as a numpy ndarray, all we
-need is a path to the image. Once we have the image we can view and manipulate
-it in the same way.  To write an image we can use the function `io.imsave`, we
-need the image to save and the file path.
+Now that we know how to manipulate toy images, let us read in a real image.  We
+can read an image using the function `io.imread` to read an image from file to
+a numpy ndarray, all we need is a path to the image. Once we have the image, we
+can view and manipulate it in the same way.  To write an image we can use the
+function `io.imsave`, we need the image to save and the file path.
 
 ```{python}
 # Read in an image
@@ -207,7 +221,7 @@ print(img.dtype)
 
 # We can similarly view the image using matplotlib
 fig, ax = plt.subplots()
-ax.imshow(img, cmap='gray')
+ax.imshow(img, cmap = 'gray')
 
 # Manipulate the image
 img[200:500, 300:400] = 0
@@ -217,6 +231,14 @@ img[:, 8] = 0
 ski.io.imsave('data/out.tif', img, check_contrast = False)
 ```
 
-## A note on image formats
+# A note on image formats
+Image formats determine how the pixel and intensity information of an image are
+stored in a computer. Broadly there are two classes of file types: (1) lossy
+compression formats such as JPEG, PNG, etc. (2) Uncompressed (or lossless
+compressed) formats such as TIFF (or, shortly, TIF) and most microscopy image
+formats. Lossy compressed files are smaller but they lose information in order
+to achieve the smaller file size. Never use a lossy compressed files for
+microscopy or image analyses. TIFF file formats are very widely for image
+analysis, and it is highly recommended. Most proprietary file formats that is
+output from microscopes can be converted to TIFFs. 
 
-## Exercises
