@@ -45,21 +45,20 @@ separated and get labeled with the same ID.
 import skimage as ski
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import ndimage as ndi
 
 # Load the cell images
 img = ski.io.imread("data/F01_202w2.TIF")
 
-# Get the image histogram
-hist, hist_centers = ski.exposure.histogram(img)
 
-# Get the Otsu threshold
-otsu_thresh = ski.filters.threshold_otsu(img)
+# Get the Triangle threshold
+binary_thresh = ski.filters.threshold_triangle(img)
 
 # Binary threshold the image
-img_otsu = img > otsu_thresh
+img_binary = img > binary_thresh
 
 # Get the connected components segmentation
-label_img = ski.morphology.label(img_otsu)
+label_img = ski.morphology.label(img_binary)
 # The number of segmented objects is the maximum value of the 
 # label image
 print('Number of segmented objects = ' + str(label_img.max()))
@@ -71,8 +70,8 @@ label_img_overlay = ski.color.label2rgb(label_img)
 fig, ax =  plt.subplots(2, 2)
 ax[0, 0].imshow(img, cmap = 'gray')
 ax[0, 0].set_title('Original image')
-ax[0, 1].imshow(img_otsu, cmap = 'gray')
-ax[0, 1].set_title('Otsu threshold')
+ax[0, 1].imshow(img_binary, cmap = 'gray')
+ax[0, 1].set_title('Triangle threshold')
 ax[1, 0].imshow(label_img, cmap = 'gray')
 ax[1, 0].set_title('Label image')
 ax[1, 1].imshow(label_img_overlay)
@@ -94,55 +93,117 @@ of the segmented objects.
 
 Watershed segmentation is a way to segment objects when they are touching one
 another.  Watershed segments a grayscale image by treating the intensity of the
-image as the height of the dam. Think of the bright regions of the image as
+image as the height of a dam. Think of the bright regions of the image as
 tall structures and dimmer regions as shorter structures. Watershed
 segmentation starts flooding the image from the lowest regions (or regions
-specified by the user), and when a dam overflows into an another one, a
-segmentation boundary is created. 
+specified by the user), and when the water overflows into across a structure, a
+segmentation boundary is created. Since we need the segmentation boundaries at
+the object borders, the input image to watershed should be an image that has
+largest intensity values the object boundaries and the smallest values at the
+innermost regions of the cells.
+
+## Distance transform
+One way to get such an image from a binary image is to take a distance
+transform.  For each foreground pixel, the distance transform calculates the
+euclidean distance to the closest background pixel.  So the pixels that are
+just adjacent to the background are going to get a value of 1, and the pixels
+at the center of objects are going to get the highest value (the radius for a
+perfectly circular object). 
+
+For watershed segmentation we need the center of objects to have the lowest
+value and the boundaries of the objects to have the largest values, we can get
+such an image by simply inverting the distance transformed image. 
 
 ```{python}
-from scipy import ndimage as ndi
+# Get the distance transform
+# Returns a float image, but let's not get into the details here
+img_dist = ndi.distance_transform_edt(img_binary)
 
-# Load the cell images
-cyto = ski.io.imread("data/F01_202w1.TIF")
-nuc = ski.io.imread("data/F01_202w2.TIF")
+# Invert the distance
+img_dist_invert = ski.util.invert(img_dist)
 
-# Triange threshold the cytoplasm
-cyto_bin = cyto > ski.filters.threshold_triangle(cyto)
+# Plot the images
+fig, ax =  plt.subplots(1, 3, figsize = (10, 4))
+ax[0].imshow(img, cmap = 'gray')
+ax[0].set_title('Original image')
+ax[1].imshow(img_dist, cmap = 'gray')
+ax[1].set_title('Distance transform')
+ax[2].imshow(img_dist_invert, cmap = 'gray')
+ax[2].set_title('Inverse of distance transform')
+for a in ax:
+    a.set_axis_off()
+```
 
-# Get the distance trasform of the nucleus
-cyto_dist = ndi.distance_transform_edt(cyto_bin)
-# Negate the distance so that the cell boundars have
-# the largest value, and the innermost regions of a
-# cell have the least value
-cyto_dist = - cyto_dist
+## Image maxima and minima
+Furthermore, we can also provide marker (seed) points to watershed
+segmentation. These marker regions are where the folding starts from. From our
+distance image, the ideal seed points would be the locations that are at the
+center of the objects, i.e with the smallest distance. These regions with the
+smallest values are surrounded by regions of higher values, i.e they are the
+minima intensity regions in an image. They can be detected with the h-minima
+algorithm. The h here refer to the minimum height to retain in the output.
+Smaller value of h will retain more minima and larger ones will will retain few
+ones. Therefore, the higher the h, just the larger objects that have a radial
+distance more than h will be retained.
 
-# Otsu threshold the nucleus
-nuc_bin = nuc > ski.filters.threshold_otsu(nuc)
-# Get the connected components of the nucleus
-# These will be used as seeds for the watershed segmentation
-nuc_label = ski.morphology.label(nuc_bin)
+```{python}
+# Get the h-minima for different values of h
+local_min_h2 = ski.morphology.h_minima(img_dist_invert, h = 2)
+local_min_h5 = ski.morphology.h_minima(img_dist_invert, h = 5)
+local_min_h25 = ski.morphology.h_minima(img_dist_invert, h = 25)
+
+# The h-minima are 1-pixel each. 
+# Just making them bigger for visualization by dilation 
+se = ski.morphology.ellipse(5, 5)
+local_min_h2_big = ski.morphology.binary_dilation(local_min_h2, se)
+local_min_h5_big = ski.morphology.binary_dilation(local_min_h5, se)
+local_min_h25_big = ski.morphology.binary_dilation(local_min_h25, se)
+
+# Plot the images
+fig, ax =  plt.subplots(2, 2)
+ax[0, 0].imshow(img_dist_invert, cmap = 'gray')
+ax[0, 0].set_title('Original Image')
+ax[0, 1].imshow(local_min_h2_big, cmap = 'gray')
+ax[0, 1].set_title('h-minima (h = 2)')
+ax[1, 0].imshow(local_min_h5_big, cmap = 'gray')
+ax[1, 0].set_title('h-minima (h = 5)')
+ax[1, 1].imshow(local_min_h25_big, cmap = 'gray')
+ax[1, 1].set_title('h-minima (h = 25)')
+for a in ax.flatten():
+    a.set_axis_off()
+```
+
+Now that we have the distance transformed image and the h-minima image, we can
+use these for the watershed segmentation. Notice that the touching nucleii are
+separated out. The compactness parameter to watershed segmentation is used
+to adjust the smoothness in segmentation boundaries. 
+
+```{python}
+# The marker seeds need to be labels with a unique id.
+# We can get the connected components of the h-minima to label it
+nuc_seed_label = ski.morphology.label(local_min_h2)
 
 # Watershed segmentation
-label_img = ski.segmentation.watershed(cyto_dist, 
-                markers = nuc_label, mask = cyto_bin)
+label_img = ski.segmentation.watershed(img_dist_invert, 
+                markers = nuc_seed_label, mask = img_binary, compactness = 0)
 print('Number of segmented objects = ' + str(label_img.max()))
 
 # Color the label image for visualization
-label_img_overlay = ski.color.label2rgb(label_img, cyto_bin)
+label_img_overlay = ski.color.label2rgb(label_img)
+
+# Write the manipulated image to file
+ski.io.imsave('data/out.tif', label_img_overlay, check_contrast = False)
 
 # Plot the images
-fig, ax =  plt.subplots(2, 3, figsize = (10, 5))
-ax[0, 0].imshow(cyto, cmap = 'gray')
-ax[0, 0].set_title('Original image')
-ax[0, 1].imshow(cyto_bin, cmap = 'gray')
-ax[0, 1].set_title('Binary threshold')
-ax[0, 2].imshow(cyto_dist, cmap = 'gray')
-ax[0, 2].set_title('Inverse distance map')
-ax[1, 0].imshow(ski.color.label2rgb(nuc_label), cmap = 'gray')
-ax[1, 0].set_title('Watershed seeds')
-ax[1, 1].imshow(label_img_overlay, cmap = 'gray')
-ax[1, 1].set_title('Watershed segmentation')
+fig, ax =  plt.subplots(2, 2)
+ax[0, 0].imshow(img_dist, cmap = 'gray')
+ax[0, 0].set_title('Distance transform')
+ax[0, 1].imshow(local_min_h2_big, cmap = 'gray')
+ax[0, 1].set_title('Watershed markers (seeds)')
+ax[1, 0].imshow(label_img, cmap = 'gray')
+ax[1, 0].set_title('Watershed label image')
+ax[1, 1].imshow(label_img_overlay)
+ax[1, 1].set_title('Colored label image')
 for a in ax.flatten():
     a.set_axis_off()
 ```
