@@ -2233,7 +2233,7 @@ vertical-align: -.125em;
 <h1>Converting a grayscale image to a binary image</h1>
 <p>Binary thresholding is done by picking a specific threshold value that is in the range of the pixel intensities, i.e between 0 and 255 for a 8-bit image. All the pixels in the image that have an intensity value below (or above) this thresholds are set to 0 and the intensity values above this threshold are set to 1.</p>
 <p>To binary threshold can be accomplished with the comparative operator <code>&lt;</code> or <code>&gt;</code>, which returns a boolean values pixels meeting the condition.</p>
-<div id="5c9c2f5a" class="cell" data-execution_count="1">
+<div id="a2ae7fd3" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the required libraries</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> skimage <span class="im">as</span> ski</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -2272,7 +2272,7 @@ vertical-align: -.125em;
 </div>
 </div>
 <p>The threshold value determines what is retained in the output binary image. When a low threshold is pickled more pixels in the output image have a value of 1, and similarly, when ehan a higher threshold is picked fewer pixels are retrained:</p>
-<div id="604573fe" class="cell" data-execution_count="2">
+<div id="9a47a718" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the coins data</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> ski.data.coins()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2303,7 +2303,7 @@ vertical-align: -.125em;
 <h1>Finding a binary threshold from the image histogram</h1>
 <p>Now that we have seen how to binary threshold an image and the impact of the thresholds value, how can the pick out the optimal threshold value. Most often is this accomplished from the intensity histogram of the input image.</p>
 <p>By looking at the histogram we can get an estimate of pixel intensities in the image. Most importantly, since we are binary thresholding an image, we can get a sense of the number of pixels that will be above or below a specific cutoff. For example, from the histogram below, we can easily see that picking a value of 200 was too high and it retained too few pixels as expected and picking a value of less than 100 is likely too low. A threshold of approximately 125 looks optimal for our proposes.</p>
-<div id="bd16fe7a" class="cell" data-execution_count="3">
+<div id="7c2d9dd4" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the coins data</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> ski.data.coins()</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2334,7 +2334,7 @@ vertical-align: -.125em;
 <section id="otsu-thresholding" class="level2">
 <h2 class="anchored" data-anchor-id="otsu-thresholding">Otsu thresholding</h2>
 <p>The most commonly uses among this is the Otsu threshold. The Otsu metric tries assumes that the histogram consists of two distinct distributions (corresponding to the background and foreground pixels), and picks the threshold value such that it minimizes the variance between these two distributions.</p>
-<div id="b2a74f04" class="cell" data-execution_count="4">
+<div id="480a2418" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the coins data</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> ski.data.coins()</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2364,7 +2364,7 @@ vertical-align: -.125em;
 <section id="triangle-thresholding" class="level2">
 <h2 class="anchored" data-anchor-id="triangle-thresholding">Triangle thresholding</h2>
 <p>Triangle threshold is a bit more lenient than Otsu threshold, i.e, the triangle threshold value is usually lower than the Otsu, and hence the thresholded image contains more foreground pixels.</p>
-<div id="34dba512" class="cell" data-execution_count="5">
+<div id="a9589144" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the coins data</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> ski.data.coins()</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2396,8 +2396,8 @@ vertical-align: -.125em;
 <h1>Picking the the “right” metric</h1>
 <p>While the Otsu and Triangle thresholding approaches are widely uses, there are several other approach that are available as well.</p>
 <p>Picking the right metric really depends on your downstream application. If it is important to retain as many foreground pixels as possible (that can later be pruned, if necessary) then it is better to choose a more lenient methods. On the other hand, if we are concerned about getting as little background ad possible, then it is better to choose a more conservative methods. When designing an image analysis pipeline it is common to test several different approaches prior to picking an optimal metric.</p>
-<p>As an example let us test these metrics on our cell images.</p>
-<div id="6984df48" class="cell" data-execution_count="6">
+<p>As an example let us test these metrics on our cell images. The cell image is from <a href="https://www.cellimagelibrary.org/images/CCDB_6843">The Cell Image Library</a>.</p>
+<div id="2e3f2922" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the cell images</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> ski.io.imread(<span class="st">&quot;data/F01_202w1.TIF&quot;</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>

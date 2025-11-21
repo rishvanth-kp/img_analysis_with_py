@@ -198,6 +198,8 @@ designing an image analysis pipeline it is common to test several different
 approaches prior to picking an optimal metric. 
 
 As an example let us test these metrics on our cell images.
+The cell image is from 
+[The Cell Image Library](https://www.cellimagelibrary.org/images/CCDB_6843).
 
 ```{python}
 # Load the cell images
