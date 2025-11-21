@@ -17,6 +17,9 @@ format:
 ---
 
 # What is image analysis?
+Image analysis is a algorithmic way of extracting useful information from digital images. 
+We will focus on the analysis of microscopy images, though all the concepts are identical
+irrespective of where the image was acquired from. 
 
 # Why python?
 
