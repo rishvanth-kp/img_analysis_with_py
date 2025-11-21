@@ -46,6 +46,7 @@ import skimage as ski
 import numpy as np
 import matplotlib.pyplot as plt
 
+## For skimage version 0.25 onward
 # A rectangle structuring element
 rect_se = ski.morphology.footprint_rectangle((1, 3))
 
@@ -57,6 +58,15 @@ circle_se = ski.morphology.ellipse(10, 10)
 
 # A elliptical structuring element of width 10 and height 5
 ellipse_se = ski.morphology.ellipse(10, 5)
+
+
+## For older version of skimage
+"""
+rect_se = ski.morphology.rectangle(1, 3)
+sq_se = ski.morphology.rectangle(3, 3)
+circle_se = ski.morphology.disk(10)
+ellipse_se = ski.morphology.disk(5)
+"""
 
 # Plot the SEs
 fig, ax = plt.subplots(2, 2)

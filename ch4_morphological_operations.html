@@ -2235,35 +2235,45 @@ vertical-align: -.125em;
 <section id="structuring-element" class="level2">
 <h2 class="anchored" data-anchor-id="structuring-element">Structuring element</h2>
 <p>The key component for a morphological operation in a structuring element. A structuring element is a identical to a kernel (window) that we used for image smoothing. A structural element is a (small) binary image where the foreground pixels are of a desired shape. As examples, we can have rectangle or elliptical shaped structural elements:</p>
-<div id="62e4a2f4" class="cell" data-execution_count="1">
+<div id="34beba97" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the required libraries</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> skimage <span class="im">as</span> ski</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># A rectangle structuring element</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>rect_se <span class="op">=</span> ski.morphology.footprint_rectangle((<span class="dv">1</span>, <span class="dv">3</span>))</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># A square structuring element</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>sq_se <span class="op">=</span> ski.morphology.footprint_rectangle((<span class="dv">3</span>, <span class="dv">3</span>))</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># A circular structuring element or radius 10</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>circle_se <span class="op">=</span> ski.morphology.ellipse(<span class="dv">10</span>, <span class="dv">10</span>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># A elliptical structuring element of width 10 and height 5</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>ellipse_se <span class="op">=</span> ski.morphology.ellipse(<span class="dv">10</span>, <span class="dv">5</span>)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the SEs</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">0</span>].imshow(rect_se, cmap <span class="op">=</span> <span class="st">&#39;gray&#39;</span>, vmin <span class="op">=</span> <span class="dv">0</span>, vmax <span class="op">=</span> <span class="dv">2</span>)</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">0</span>].set_title(<span class="st">&#39;1x3 rectangle&#39;</span>)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">1</span>].imshow(sq_se, cmap <span class="op">=</span> <span class="st">&#39;gray&#39;</span>, vmin <span class="op">=</span> <span class="dv">0</span>, vmax <span class="op">=</span> <span class="dv">2</span>)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">1</span>].set_title(<span class="st">&#39;3x3 square&#39;</span>)</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">0</span>].imshow(circle_se, cmap <span class="op">=</span> <span class="st">&#39;gray&#39;</span>, vmin <span class="op">=</span> <span class="dv">0</span>, vmax <span class="op">=</span> <span class="dv">2</span>)</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">0</span>].set_title(<span class="st">&#39;10x10 ellipse&#39;</span>)</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">1</span>].imshow(ellipse_se, cmap <span class="op">=</span> <span class="st">&#39;gray&#39;</span>, vmin <span class="op">=</span> <span class="dv">0</span>, vmax <span class="op">=</span> <span class="dv">2</span>)</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">1</span>].set_title(<span class="st">&#39;10x5 ellipse&#39;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="1">
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">## For skimage version 0.25 onward</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># A rectangle structuring element</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>rect_se <span class="op">=</span> ski.morphology.footprint_rectangle((<span class="dv">1</span>, <span class="dv">3</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># A square structuring element</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>sq_se <span class="op">=</span> ski.morphology.footprint_rectangle((<span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># A circular structuring element or radius 10</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>circle_se <span class="op">=</span> ski.morphology.ellipse(<span class="dv">10</span>, <span class="dv">10</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># A elliptical structuring element of width 10 and height 5</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>ellipse_se <span class="op">=</span> ski.morphology.ellipse(<span class="dv">10</span>, <span class="dv">5</span>)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">## For older version of skimage</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">rect_se = ski.morphology.rectangle(1, 3)</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">sq_se = ski.morphology.rectangle(3, 3)</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">circle_se = ski.morphology.disk(10)</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">ellipse_se = ski.morphology.disk(5)</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">&quot;&quot;&quot;</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the SEs</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">0</span>].imshow(rect_se, cmap <span class="op">=</span> <span class="st">&#39;gray&#39;</span>, vmin <span class="op">=</span> <span class="dv">0</span>, vmax <span class="op">=</span> <span class="dv">2</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">0</span>].set_title(<span class="st">&#39;1x3 rectangle&#39;</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">1</span>].imshow(sq_se, cmap <span class="op">=</span> <span class="st">&#39;gray&#39;</span>, vmin <span class="op">=</span> <span class="dv">0</span>, vmax <span class="op">=</span> <span class="dv">2</span>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>, <span class="dv">1</span>].set_title(<span class="st">&#39;3x3 square&#39;</span>)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">0</span>].imshow(circle_se, cmap <span class="op">=</span> <span class="st">&#39;gray&#39;</span>, vmin <span class="op">=</span> <span class="dv">0</span>, vmax <span class="op">=</span> <span class="dv">2</span>)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">0</span>].set_title(<span class="st">&#39;10x10 ellipse&#39;</span>)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">1</span>].imshow(ellipse_se, cmap <span class="op">=</span> <span class="st">&#39;gray&#39;</span>, vmin <span class="op">=</span> <span class="dv">0</span>, vmax <span class="op">=</span> <span class="dv">2</span>)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>, <span class="dv">1</span>].set_title(<span class="st">&#39;10x5 ellipse&#39;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>Text(0.5, 1.0, &#39;10x5 ellipse&#39;)</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -2278,7 +2288,7 @@ vertical-align: -.125em;
 <section id="erosion" class="level2">
 <h2 class="anchored" data-anchor-id="erosion">Erosion</h2>
 <p>To erode an a binary image, we overlay the structuring element at each pixel of the input image, and the output at that pixel is set to 1 if all the pixels in the input image under the structuring element is 1. The erosion operation is useful to retain parts of the input image that “fits into” the structuring element. For example, if we are using a square structuring element 2 pixels wide, it will remove any rectangular objects in the input image that has width less than 2, and all other objects will shirk in size.</p>
-<div id="48c80105" class="cell" data-execution_count="2">
+<div id="41c276cd" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a binary figure</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
@@ -2301,7 +2311,7 @@ vertical-align: -.125em;
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_title(<span class="st">&#39;Original image&#39;</span>)</span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].imshow(er, cmap <span class="op">=</span> <span class="st">&#39;gray&#39;</span>)</span>
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_title(<span class="st">&#39;Eroded with 2x2 square&#39;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>Text(0.5, 1.0, &#39;Eroded with 2x2 square&#39;)</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -2316,7 +2326,7 @@ vertical-align: -.125em;
 <section id="dilation" class="level2">
 <h2 class="anchored" data-anchor-id="dilation">Dilation</h2>
 <p>Dilation is the inverse of an erosion. To dilate a binary image, we overlay the structuring element at each pixel of the input image, the output at that pixel is set to 1 if any pixel in the in the input image under the structuring element is 1. The dilation operation is useful to join fissures in the input image that are smaller than the structuring element. For example, using a square structuring element 2 pixels wide will join any objects in the input image that are less than 2 pixels apart, and all other objects will expand.</p>
-<div id="fba2d215" class="cell" data-execution_count="3">
+<div id="1b26c528" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a binary image</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
@@ -2339,7 +2349,7 @@ vertical-align: -.125em;
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">0</span>].set_title(<span class="st">&#39;Original image&#39;</span>)</span>
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].imshow(dil, cmap <span class="op">=</span> <span class="st">&#39;gray&#39;</span>)</span>
 <span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>ax[<span class="dv">1</span>].set_title(<span class="st">&#39;Dilated with 2x2 square&#39;</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>Text(0.5, 1.0, &#39;Dilated with 2x2 square&#39;)</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -2358,7 +2368,7 @@ vertical-align: -.125em;
 <section id="morphological-opening" class="level2">
 <h2 class="anchored" data-anchor-id="morphological-opening">Morphological opening</h2>
 <p>Morphological opening first erodes an image and then dilates the eroded image. As we have seen eroding an image removes objects smaller than the structuring elements, and makes all other objects in the input image smaller. Dilating the eroded image restores these smaller objects by making them bigger. Importantly, the objects that were lost in the erosion are not restored. In essence, we remove all objects smaller than the structuring element and all other objects are restored.</p>
-<div id="b3578f7d" class="cell" data-execution_count="4">
+<div id="cfb47f68" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a binary image</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
@@ -2404,7 +2414,7 @@ vertical-align: -.125em;
 <section id="morphological-closing" class="level2">
 <h2 class="anchored" data-anchor-id="morphological-closing">Morphological closing</h2>
 <p>Morphological closing first dilates an image and then erodes the dilated image. Dilating an image makes all objects bigger and objects that closer than the structuring element are joined into one, and makes all other objects larger. Eroding a dilated image restores the larger objects by making them smaller. Importantly, the objects that were merged by the dilation will remain merged. In effect, we connect objects that are closer than the structuring element and all other objects are restored.</p>
-<div id="f526e700" class="cell" data-execution_count="5">
+<div id="4530dfaa" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a binary image</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                [<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
@@ -2455,7 +2465,7 @@ vertical-align: -.125em;
 <section id="hole-filling" class="level2">
 <h2 class="anchored" data-anchor-id="hole-filling">Hole filling</h2>
 <p>As the name suggests, this fills holes in in binary images. Holes in a binary image are background pixels that are completely surrounded by foreground pixels. A hole filling converts these background pixels into foreground pixels.</p>
-<div id="1f951a25" class="cell" data-execution_count="6">
+<div id="3859e574" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> ndimage <span class="im">as</span> ndi</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the cell images</span></span>
@@ -2492,7 +2502,7 @@ vertical-align: -.125em;
 <section id="border-extraction" class="level2">
 <h2 class="anchored" data-anchor-id="border-extraction">Border extraction</h2>
 <p>We can get the border of objects by dilating an image with a 3x3 square structuring element to make all objects in the image one pixel larger. We can then subtract the original image from the dilated image to retain just the border pixels.</p>
-<div id="4e2ef1cf" class="cell" data-execution_count="7">
+<div id="f592e35b" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> ski.data.coins()</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># create SE and dilate</span></span>
@@ -2523,7 +2533,7 @@ vertical-align: -.125em;
 <section id="morphological-reconstruction" class="level2">
 <h2 class="anchored" data-anchor-id="morphological-reconstruction">Morphological reconstruction</h2>
 <p>As we have seen opening changes the shape of the objects in the input image, and these can be quite problematic when we need to preserve the object shapes. Morphological reconstruction is a way to preserve the shape of the of the objects. It takes as input two images: the input binary image (usually referred to as the mask image) and a seed image (sometimes referred to as the marker image). In the fist step the seed image in expanded by dilation. However this dilation is contained by the mask image, such that the dilation does not expand to any pixels that is not a foreground pixel in the mask image. This process is repeated iteratively until there are no changes.</p>
-<div id="665d35ef" class="cell" data-execution_count="8">
+<div id="c6e74f43" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a binary image</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> np.array([[<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>],</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>],</span>
@@ -2571,7 +2581,7 @@ vertical-align: -.125em;
 <section id="skeletonization" class="level2">
 <h2 class="anchored" data-anchor-id="skeletonization">Skeletonization</h2>
 <p>Skeletonization iteratively erodes images to get a 1 pixel skeleton on an image. It is useful for understanding the shape and orientation of objects in an image.</p>
-<div id="a385bde3" class="cell" data-execution_count="9">
+<div id="4ba71ddc" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> ndimage <span class="im">as</span> ndi</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the image</span></span>

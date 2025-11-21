@@ -72,7 +72,6 @@ Another useful pixel wise operation is gamma correction. Each pixel is the
 image is transformed using $o = i ^ \gamma$. The curve looks as follows
 for different values of $\gamma$:
 
-
 ```{python}
 # Create an array with values 0 - 255
 in_range = np.arange(0, 256)
@@ -163,7 +162,6 @@ image would have pixel concentrated on the right end of the histogram.
 Our gamma correction makes of the coins image made it brighter or darker, and
 hence their histograms are more narrow. 
 
-
 ```{python}
 # Get the histogram of the gamma corrected images
 hist_025, hist_centers_025 = ski.exposure.histogram(gamma_025)
@@ -205,6 +203,7 @@ important features.
 # Load the coins data
 img = ski.data.coins()
 
+## For skimage version 0.25 onward
 # Mean smoothing at different window sizes
 img_mean_3 = ski.filters.rank.mean(img, 
   ski.morphology.footprint_rectangle((3, 3)))
@@ -212,6 +211,16 @@ img_mean_10 = ski.filters.rank.mean(img,
   ski.morphology.footprint_rectangle((10, 10)))
 img_mean_25 = ski.filters.rank.mean(img, 
   ski.morphology.footprint_rectangle((25, 25)))
+
+## For older version of skimage
+"""
+img_mean_3 = ski.filters.rank.mean(img, 
+  ski.morphology.rectangle(3, 3))
+img_mean_10 = ski.filters.rank.mean(img, 
+  ski.morphology.rectangle(10, 10))
+img_mean_25 = ski.filters.rank.mean(img, 
+  ski.morphology.rectangle(25, 25))
+"""
 
 # Plot the image
 fig, ax =  plt.subplots(2, 2)
